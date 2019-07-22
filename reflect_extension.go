@@ -345,6 +345,14 @@ func describeStruct(ctx *ctx, typ reflect2.Type) *StructDescriptor {
 		if tag == "-" {
 			continue
 		}
+		// Fallback to json tag if custom tag is not present.
+		if tag == "" || tagParts[0] == "" {
+			tag, _ = field.Tag().Lookup("json")
+			tagParts = strings.Split(tag, ",")
+		}
+		if tag == "-" {
+			continue
+		}
 		if field.Anonymous() && (tag == "" || tagParts[0] == "") {
 			if field.Type().Kind() == reflect.Struct {
 				structDescriptor := describeStruct(ctx, field.Type())
